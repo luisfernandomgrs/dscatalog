@@ -1,0 +1,10 @@
+INSERT INTO tb_category(name) VALUES ('Inteligência Artificial');
+INSERT INTO tb_category(name) VALUES ('Internet das Coisas (IoT)');
+INSERT INTO tb_category(name) VALUES ('Blockchain');
+INSERT INTO tb_category(name) VALUES ('Realidade Virtual e Aumentada');
+INSERT INTO tb_category(name) VALUES ('Computação em Nuvem');
+INSERT INTO tb_category(name) VALUES ('Impressão 3D');
+INSERT INTO tb_category(name) VALUES ('Cibersegurança');
+INSERT INTO tb_category(name) VALUES ('Big Data e Análise de Dados');
+INSERT INTO tb_category(name) VALUES ('Robótica');
+INSERT INTO tb_category(name) VALUES ('Tecnologia Vestível');
