@@ -9,6 +9,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,24 +24,9 @@ public class CategoryService {
     private CategoryRepository repository;
 
     @Transactional(readOnly = true)
-    public List<CategoryDTO> findAll() {
-        /*
-        //first model...
-        return this.repository.findAll();
-        */
-
-        /*
-        //second model
-        List<Category> categories = this.repository.findAll();
-        List<CategoryDTO> categoryDTOs = new ArrayList<>();
-        for (Category category : categories) {
-            categoryDTOs.add(new CategoryDTO(category));
-        }
-        return categoryDTOs;
-        */
-
+    public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
         //using lambda functions
-        return this.repository.findAll().stream().map(category -> new CategoryDTO(category)).collect(Collectors.toList());
+        return this.repository.findAll(pageRequest).map(category -> new CategoryDTO(category));
     }
 
     @Transactional(readOnly = true)

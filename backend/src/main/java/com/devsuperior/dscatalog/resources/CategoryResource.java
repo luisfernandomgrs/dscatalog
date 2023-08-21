@@ -3,6 +3,9 @@ package com.devsuperior.dscatalog.resources;
 import com.devsuperior.dscatalog.dto.CategoryDTO;
 import com.devsuperior.dscatalog.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,17 +20,13 @@ public class CategoryResource {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> findAll() {
-        /* Mock without database access...
-        List<Category> listCategory = new ArrayList<>();
+    public ResponseEntity<Page<CategoryDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                     @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
+                                                     @RequestParam(value = "direction", defaultValue = "ASC") String direction,
+                                                     @RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 
-        listCategory.add(new Category(1L, "Books"));
-        listCategory.add(new Category(2L, "Electronics"));
-        listCategory.add(new Category(3L, "Mobile"));
-
-        return ResponseEntity.ok(listCategory);
-        */
-        return ResponseEntity.ok(this.categoryService.findAll());
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        return ResponseEntity.ok(this.categoryService.findAllPaged(pageRequest));
     }
 
     @GetMapping(value = "{id}")
