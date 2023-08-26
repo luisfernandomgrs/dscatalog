@@ -1,7 +1,10 @@
 package com.devsuperior.dscatalog.services;
 
+import com.devsuperior.dscatalog.dto.CategoryDTO;
 import com.devsuperior.dscatalog.dto.ProductDTO;
+import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.entities.Product;
+import com.devsuperior.dscatalog.repositories.CategoryRepository;
 import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -20,6 +23,8 @@ import java.util.Optional;
 public class ProductService {
     @Autowired
     private ProductRepository repository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
     public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
@@ -36,18 +41,18 @@ public class ProductService {
     @Transactional
     public ProductDTO insert(ProductDTO dtoParam) {
         Product entity = new Product();
-        //entity.setName(dtoParam.getName());
+        this.CopyDtoToEntity(dtoParam, entity);
         entity = repository.save(entity);
-        return new ProductDTO(entity);
+        return new ProductDTO(entity, entity.getCategories());
     }
 
     @Transactional
     public ProductDTO update(Long id, ProductDTO dtoParam) {
         try {
             Product entity = repository.getReferenceById(id);
-            //entity.setName(dtoParam.getName());
+            this.CopyDtoToEntity(dtoParam, entity);
             entity = repository.save(entity);
-            return new ProductDTO(entity);
+            return new ProductDTO(entity, entity.getCategories());
         }
         catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id not found " + id);
@@ -69,6 +74,23 @@ public class ProductService {
         }
         catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id not found " + id);
+        }
+    }
+
+    private void CopyDtoToEntity(ProductDTO productDTO, Product product) {
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setDate(productDTO.getDate());
+        product.setPrice(productDTO.getPrice());
+        product.setImgUrl(productDTO.getImgUrl());
+
+        product.getCategories().clear();
+        for (CategoryDTO categoryDTO : productDTO.getCategories()) {
+            //Category category = categoryRepository.getOne(categoryDTO.getId());
+
+            //O uso de getOne(ID) para springframework.data:spring-data-jpa:3.1.2 | "is deprecated"
+            Optional<Category> optionalCategory = this.categoryRepository.findById(categoryDTO.getId());
+            product.getCategories().add(optionalCategory.get());
         }
     }
 }
