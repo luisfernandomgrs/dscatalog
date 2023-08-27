@@ -3,7 +3,6 @@ package com.devsuperior.dscatalog.dto;
 import com.devsuperior.dscatalog.entities.Category;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.Instant;
 
 public class CategoryDTO implements Serializable {
