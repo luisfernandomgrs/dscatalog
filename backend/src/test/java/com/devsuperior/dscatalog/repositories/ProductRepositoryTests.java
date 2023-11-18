@@ -40,10 +40,15 @@ public class ProductRepositoryTests {
     @Test
     public void deleteShouldThrowEmptyResultDataAccessExceptionWhenIdDoesNotExist() {
         Assertions.assertThrows(ResourceNotFoundException.class, () ->  {
-            Optional<Product> optional = productRepository.findById(nonExistingId);
-            optional.orElseThrow(() -> new ResourceNotFoundException("Id not found"));
+            Optional<Product> entity = productRepository.findById(nonExistingId);
+            entity.orElseThrow(() -> new ResourceNotFoundException("Id not found"));
 
-            productRepository.deleteById(1000L);
+            //productRepository.deleteById(1000L);
+            /**
+             * The method delete get the before class from the findById,
+             * instead of make a full search to delete record
+             */
+            productRepository.delete(entity.get());
         });
     }
 }
