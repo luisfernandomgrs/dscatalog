@@ -63,8 +63,13 @@ public class ProductService {
 
     public void delete(Long id) {
         try {
+            /**
+            * By default, nothing throws should when id does not exist.
+            * But if this method implements code bellow, then if exists tests, aren't work.
+            *
             Optional<Product> optional = this.repository.findById(id);
             optional.orElseThrow(() -> new ResourceNotFoundException("Id not found"));
+            */
 
             repository.deleteById(id);
         }
